@@ -6,11 +6,7 @@ Animated ARGB progress bar for **Steam downloads**, **Dolphin/KIO file transfers
 
 This update contains two matching components:
 
-- **Main service:** [`steam-download-rgb-v0.8-beta2.zip`](./steam-download-rgb-v0.8-beta2.zip)
-- **Optional Decky Loader plugin:** [`steam-download-rgb-decky-v0.8-beta9.zip`](./steam-download-rgb-decky-v0.8-beta9.zip)
 - **Complete bundle:** [`steam-download-rgb-v0.8-beta9-bundle.zip`](./steam-download-rgb-v0.8-beta9-bundle.zip)
-- **Release notes:** [`RELEASE_NOTES-v0.8-beta9.md`](./RELEASE_NOTES-v0.8-beta9.md)
-- **SHA-256 checksums:** [`SHA256SUMS.txt`](./SHA256SUMS.txt)
 
 The main service works without Decky Loader. The Decky plugin only provides a convenient settings panel inside SteamOS Gaming Mode.
 
