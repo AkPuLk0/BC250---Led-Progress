@@ -21,10 +21,6 @@ Display priority is fixed:
 3. **Dolphin/KIO file copy** — purple by default;
 4. **No active task** — OpenLinkHub regains control and restores the normal RGB profile, such as `gpu-temperature`.
 
-When a download or file copy is paused, completed, or cancelled, the normal OpenLinkHub profile is restored after **2 seconds**. This delay prevents visible flickering during short Steam phase transitions.
-
-Progress always fills **from left to right**. The old reverse-direction option has been removed from both the service and the Decky plugin. Existing configurations are migrated automatically without deleting unrelated settings.
-
 ## Main features
 
 - Real Steam download progress from Steam's currently active phase;
