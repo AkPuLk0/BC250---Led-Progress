@@ -256,6 +256,15 @@ Before installing the plugin, make sure that:
 
 ## 2. Install the Decky plugin from ZIP
 
+<p align="center">
+  <img src="decky-plugin-settings-1.jpeg"
+       alt="Steam Download RGB Decky plugin settings - first section"
+       width="45%">
+  <img src="decky-plugin-settings-2.jpeg"
+       alt="Steam Download RGB Decky plugin settings - second section"
+       width="45%">
+</p>
+
 Download:
 
 ```text
