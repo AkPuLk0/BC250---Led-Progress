@@ -1,14 +1,18 @@
 # BC250 — LED Progress
 
-Animated ARGB progress bar for **Steam downloads**, **Dolphin/KIO file transfers**, and **SteamOS updates** on SteamOS, using **OpenLinkHub**, its integrated OpenRGB server, and a **Corsair COMMANDER DUO**.
+Animated ARGB progress bar for **Steam downloads** and **Dolphin/KIO file transfers** on **SteamOS, Bazzite, and CachyOS**, with optional **SteamOS update progress** on SteamOS, using **OpenLinkHub**, its integrated OpenRGB server, and a **Corsair COMMANDER DUO**.
 
 ## Current paired beta release
 
 This update contains two matching components:
 
-- **Complete bundle:** [`steam-download-rgb-v0.8-beta9-bundle.zip`](./steam-download-rgb-v0.8-beta9-bundle.zip)
+- **Main service:** `steam-download-rgb-v0.8-beta3.zip`
+- **Decky Loader plugin:** `steam-download-rgb-decky-v0.8-beta10.zip`
+- **Complete bundle:** [`steam-download-rgb-v0.8-beta10-bundle.zip`](./steam-download-rgb-v0.8-beta10-bundle.zip)
 
-The main service works without Decky Loader. The Decky plugin only provides a convenient settings panel inside SteamOS Gaming Mode.
+The main service works without Decky Loader. The Decky plugin only provides a convenient settings panel inside Gaming Mode.
+
+> **Compatibility:** Steam and Dolphin monitoring work on **SteamOS, Bazzite, and CachyOS**. SteamOS update monitoring through Atomupd is available **only on SteamOS**. On Bazzite and CachyOS, it is automatically disabled and does not cause the diagnostic to fail.
 
 > **Beta note:** Steam and Dolphin monitoring preserve the behavior validated in v0.7.1. SteamOS update monitoring is passive and read-only, but its complete LED sequence still needs wider validation during real SteamOS updates and across different update channels.
 
@@ -16,7 +20,7 @@ The main service works without Decky Loader. The Decky plugin only provides a co
 
 Display priority is fixed:
 
-1. **SteamOS update** — orange by default;
+1. **SteamOS update** — orange by default (**SteamOS only**);
 2. **Steam download** — blue by default;
 3. **Dolphin/KIO file copy** — purple by default;
 4. **No active task** — OpenLinkHub regains control and restores the normal RGB profile, such as `gpu-temperature`.
@@ -26,7 +30,7 @@ Display priority is fixed:
 - Real Steam download progress from Steam's currently active phase;
 - Dolphin/KIO copy progress through `org.kde.JobViewServer`;
 - multiple Dolphin copies weighted by their total byte size;
-- passive SteamOS update progress monitoring through Atomupd;
+- passive SteamOS update progress monitoring through Atomupd on SteamOS;
 - fixed priority: SteamOS > Steam > Dolphin;
 - configurable OpenRGB progress zone;
 - configurable LED count;
@@ -36,6 +40,8 @@ Display priority is fixed:
 - smooth partial-LED brightness between full LED steps;
 - automatic restoration of the original OpenLinkHub profiles;
 - diagnostic, monitor-only, LED-test, preview, and emergency-restore modes;
+- automatic SteamOS, Bazzite, and CachyOS detection;
+- automatic disabling of SteamOS/Atomupd monitoring on Bazzite and CachyOS;
 - optional bilingual Decky Loader panel.
 
 ## Decky Loader panel
@@ -64,13 +70,15 @@ Automatic language mode uses French when Steam is detected in French. English is
 
 ## Requirements
 
-- SteamOS;
+- SteamOS, Bazzite, or CachyOS;
 - Python 3;
 - OpenLinkHub controlling a Corsair COMMANDER DUO;
 - OpenLinkHub's integrated OpenRGB target server enabled on port `6743`;
 - Decky Loader only when using the optional Gaming Mode settings plugin.
 
 SteamOS read-only mode does **not** need to be disabled.
+
+> **Bazzite / CachyOS:** SteamOS/Atomupd update monitoring is automatically disabled. Steam downloads and Dolphin/KIO transfers continue to work normally.
 
 ---
 
@@ -111,13 +119,13 @@ Steam Download RGB enables and disables the COMMANDER DUO OpenRGB integration au
 Download:
 
 ```text
-steam-download-rgb-v0.8-beta2.zip
+steam-download-rgb-v0.8-beta3.zip
 ```
 
 Open a terminal in the folder containing the archive, then run:
 
 ```bash
-unzip -o steam-download-rgb-v0.8-beta2.zip
+unzip -o steam-download-rgb-v0.8-beta3.zip
 cd steam-download-rgb
 chmod +x install.sh uninstall.sh run-tests.sh
 ./install.sh
@@ -139,7 +147,7 @@ When updating an existing installation, the installer:
 - creates this one-time backup:
 
 ```text
-~/.config/steam-download-rgb/config.json.backup-before-v0.8-beta2
+~/.config/steam-download-rgb/config.json.backup-before-v0.8-beta3
 ```
 
 If the service was already active before installation, the installer restarts it automatically.
@@ -163,7 +171,11 @@ This checks Steam CEF, OpenLinkHub, the COMMANDER DUO, stored RGB profiles, and 
 
 A successful result should end with messages indicating that Steam CEF, OpenLinkHub, and the OpenRGB server are available.
 
-## 5. Monitor Steam, Dolphin, and SteamOS without changing the LEDs
+On **SteamOS**, the diagnostic can also check Atomupd for SteamOS update monitoring.
+
+On **Bazzite or CachyOS**, Atomupd is not required. SteamOS update monitoring is reported as not applicable and the diagnostic continues normally.
+
+## 5. Monitor Steam, Dolphin, and supported OS updates without changing the LEDs
 
 ```bash
 ~/.local/share/steam-download-rgb/.venv/bin/python \
@@ -171,6 +183,10 @@ A successful result should end with messages indicating that Steam CEF, OpenLink
 ```
 
 Start a Steam download or a file copy from Dolphin. The terminal should display the detected source and its progress.
+
+On SteamOS, SteamOS update activity can also be detected through Atomupd.
+
+On Bazzite and CachyOS, SteamOS/Atomupd monitoring is automatically skipped.
 
 Stop the test with:
 
@@ -201,7 +217,7 @@ Expected behavior:
 1. With no activity, OpenLinkHub keeps the normal profile, such as `gpu-temperature`.
 2. A Dolphin copy starts: the progress bar fills in purple.
 3. A Steam download starts: Steam takes priority and the bar turns blue.
-4. A SteamOS update takes priority over both Steam and Dolphin and uses orange.
+4. On SteamOS, a SteamOS update takes priority over both Steam and Dolphin and uses orange.
 5. When the highest-priority source ends, the next active source becomes visible again.
 6. Two seconds after all activity stops, OpenRGB integration is disabled and OpenLinkHub restores the stored profiles.
 
@@ -260,7 +276,7 @@ Before installing the plugin, make sure that:
 Download:
 
 ```text
-steam-download-rgb-decky-v0.8-beta9.zip
+steam-download-rgb-decky-v0.8-beta10.zip
 ```
 
 Then:
@@ -269,7 +285,7 @@ Then:
 2. Remove an older **Steam Download RGB** Decky beta when one is already installed.
 3. Enable **Developer Mode**.
 4. Open **Developer → Install Plugin from ZIP**.
-5. Select `steam-download-rgb-decky-v0.8-beta9.zip`.
+5. Select `steam-download-rgb-decky-v0.8-beta10.zip`.
 6. Confirm the installation.
 
 If the Steam Download RGB panel does not appear immediately, switch to Desktop Mode and restart Decky Loader:
@@ -280,11 +296,9 @@ sudo systemctl restart plugin_loader.service
 
 Return to Gaming Mode and open Decky Loader again.
 
-Beta 9 includes a clean-environment fix so `systemctl --user` does not accidentally load Decky's bundled OpenSSL libraries.
-
 ## 3. Use the Decky panel
 
-1. Open the SteamOS Quick Access menu.
+1. Open the Quick Access menu.
 2. Open Decky Loader.
 3. Select **Steam Download RGB**.
 4. Use **Automatic service** to enable or disable automatic startup.
@@ -295,7 +309,7 @@ Beta 9 includes a clean-environment fix so `systemctl --user` does not accidenta
 7. Enable or disable the desired sources:
    - Steam downloads;
    - Dolphin copies;
-   - SteamOS updates.
+   - SteamOS updates (**SteamOS only**).
 8. Select a color preset for each source.
 9. Use a preview button to display that source at 50% for two seconds.
 10. Select the interface language:
@@ -305,6 +319,8 @@ Beta 9 includes a clean-environment fix so `systemctl --user` does not accidenta
 11. Press **Save settings** to apply the configuration and restart the service safely.
 
 SteamOS update monitoring is currently a beta feature awaiting wider validation during real operating-system updates.
+
+On **Bazzite and CachyOS**, SteamOS-specific update monitoring is automatically disabled and the related Decky controls are hidden when not applicable.
 
 ## 4. Update the Decky plugin
 
@@ -435,6 +451,8 @@ This limits only colors sent by Steam Download RGB. It does not modify OpenLinkH
 
 Each source can be enabled or disabled independently.
 
+On **Bazzite and CachyOS**, `monitor_steamos_updates` is automatically disabled at runtime because Atomupd is specific to SteamOS.
+
 ### Colors
 
 Each color is an RGB array in the form `[red, green, blue]`, with values from `0` to `255`:
@@ -514,7 +532,7 @@ Immediately return RGB control to OpenLinkHub and reapply the stored profiles:
 ## Update the main service
 
 ```bash
-unzip -o steam-download-rgb-v0.8-beta2.zip
+unzip -o steam-download-rgb-v0.8-beta3.zip
 cd steam-download-rgb
 chmod +x install.sh uninstall.sh run-tests.sh
 ./install.sh
@@ -524,7 +542,7 @@ The installer preserves the configuration, adds missing settings, removes only t
 
 ## Update the Decky plugin
 
-Remove the old Steam Download RGB plugin from Decky Loader, then install the new ZIP through **Developer → Install Plugin from ZIP**.
+Remove the old Steam Download RGB plugin from Decky Loader, then install `steam-download-rgb-decky-v0.8-beta10.zip` through **Developer → Install Plugin from ZIP**.
 
 ---
 
@@ -592,6 +610,14 @@ sudo systemctl restart plugin_loader.service
 
 Then return to Gaming Mode and reopen Decky Loader.
 
+## Atomupd error on Bazzite or CachyOS
+
+SteamOS uses the `com.steampowered.Atomupd1` interface for operating-system update monitoring.
+
+Bazzite and CachyOS do not use this SteamOS interface. In v0.8 beta 3, the operating system is detected automatically and Atomupd monitoring is skipped on these systems.
+
+The absence of Atomupd on Bazzite or CachyOS is therefore **normal and not an installation error**.
+
 ## The LEDs remain under OpenRGB control
 
 Run the emergency restoration command:
@@ -623,7 +649,7 @@ When multiple copies are active, their overall progress is weighted according to
 
 ## SteamOS
 
-SteamOS update progress is read passively from Atomupd:
+On SteamOS, update progress is read passively from Atomupd:
 
 ```text
 Service: com.steampowered.Atomupd1
@@ -633,12 +659,22 @@ Properties: UpdateStatus and ProgressPercentage
 
 The program never starts, pauses, resumes, or cancels a SteamOS update.
 
+### Bazzite and CachyOS
+
+Bazzite and CachyOS do not use SteamOS Atomupd for their operating-system updates.
+
+Steam Download RGB detects these systems automatically and skips SteamOS/Atomupd monitoring.
+
+Steam downloads and Dolphin/KIO copies continue to work normally. The absence of `com.steampowered.Atomupd1` is expected and is **not** treated as an error.
+
+This release does **not** monitor Bazzite or CachyOS operating-system update progress.
+
 ---
 
 # Safety
 
 - Fans, pumps, temperatures, and power settings are never modified.
-- SteamOS update monitoring is read-only.
+- SteamOS update monitoring is read-only and is used only on SteamOS.
 - Current OpenLinkHub RGB profiles are recorded before control is taken.
 - Normal exit, `Ctrl+C`, errors, and `SIGTERM` return control to OpenLinkHub.
 - The systemd service is not enabled automatically during a first installation.
@@ -653,9 +689,11 @@ The program never starts, pauses, resumes, or cancels a SteamOS update.
 - Python compilation;
 - Bash syntax validation;
 - systemd unit verification;
-- 28 automated tests and simulations;
+- 32 automated tests and simulations;
 - progress-zone, LED-count, brightness, and partial-LED tests;
 - Steam, Dolphin, and Atomupd parsing tests;
+- SteamOS, Bazzite, and CachyOS detection tests;
+- Atomupd skip tests on Bazzite and CachyOS;
 - profile-restoration tests after errors;
 - migration test from an old configuration containing `reverse: true`;
 - scan for personal data in public archives.
